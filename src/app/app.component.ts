@@ -1,18 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
-import { DataService } from './services/data.service';
+import { QTableService } from './services/q-table.service';
 
 import {
   TableQuestionAnswer,
   TableQuestionStructure
 } from './models/question-table.model';
-import { Subscription } from '../../node_modules/rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [DataService]
+  providers: [QTableService]
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'app';
@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
   };
   answers: TableQuestionAnswer = [];
 
-  constructor(private data: DataService) { }
+  constructor(private qTableService: QTableService) { }
 
   onColReorder(event) {
     console.log('onColReorder: ', event);
@@ -62,11 +62,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onAddColumn() {
-    this.data.addColumn();
+    this.qTableService.addColumn();
   }
 
   onAddRow() {
-    this.data.addRow();
+    this.qTableService.addRow();
   }
 
   onRemoveColumn(event) {
@@ -78,10 +78,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   subscribe() {
-    const answerSub = this.data.answer
+    const answerSub = this.qTableService.answer
       .subscribe(answers => this.answers = answers);
 
-    const structureSub = this.data.structure
+    const structureSub = this.qTableService.structure
       .subscribe(structure => this.structure = structure);
 
     this.subsritpion.add(answerSub);
@@ -90,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscribe();
-    this.data.init();
+    this.qTableService.init();
   }
 
   ngOnDestroy() {

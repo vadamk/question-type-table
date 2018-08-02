@@ -7,7 +7,7 @@ import {
 } from '../models/question-table.model';
 
 @Injectable()
-export class DataService {
+export class QTableService {
 
   _answer: TableQuestionAnswer;
   _structure: TableQuestionStructure;
