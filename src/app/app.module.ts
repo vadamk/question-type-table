@@ -9,11 +9,13 @@ import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
 import { AppComponent } from './app.component';
 import { Autosize } from './directives/autosize.directive';
+import { QTableComponent } from './components/q-table/q-table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     Autosize,
+    QTableComponent,
   ],
   imports: [
     BrowserModule,

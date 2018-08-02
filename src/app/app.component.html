@@ -2,183 +2,21 @@
 <br>
 
 <div class="content-wrap">
-  <div class="container">
+  <div class="toolbar">
     <p-selectButton
       [options]="modes"
       [(ngModel)]="designerMode">
     </p-selectButton>
-
-    <button (click)="onAddColumn()">Add col</button>
-    <button (click)="onAddRow()">Add row</button>
   </div>
 
-  <div class="table-wrap container">
-    <p-table
-      [value]="answers"
-      [reorderableColumns]="true"
-      [resizableColumns]="true"
-      columnResizeMode="expand"
-      (onColReorder)="onColReorder($event)"
-      (onRowReorder)="onRowReorder($event)">
+  <app-q-table
+    [designerMode]="designerMode"
+    [structure]="structure"
+    [answers]="answers"
+    (changeStructure)="onChangeStructure($event)"
+    (changeAnswers)="onChangeAnswers($event)">
+  </app-q-table>
 
-      <!-- TABLE HEADER -->
-      <ng-template pTemplate="header">
-        <tr>
-
-          <!-- Empty header cell (for title/drag&drop col) -->
-          <th
-            *ngIf="designerMode"
-            class="header-reorder-cell no-border">
-          </th>
-          <th class="header-row-title-cell no-border"></th>
-
-          <!-- Header cells (Designer mode) -->
-          <ng-container *ngIf="designerMode">
-            <th
-              pEditableColumn
-              pResizableColumn
-              pReorderableColumn
-              *ngFor="let col of structure.columns;
-                let i = index;
-                let last = last;
-                let first = first"
-              class="header-cell"
-              [ngClass]="{
-                'first': first,
-                'last': last
-              }">
-              <div class="header-cell__border-wrap">
-                <p-cellEditor>
-                  <ng-template pTemplate="input">
-                    <textarea
-                      autosize
-                      [ngModel]="structure.columns[i]">
-                    </textarea>
-                  </ng-template>
-                  <ng-template pTemplate="output">
-                    <span class="header-cell__content">{{structure.columns[i]}}</span>
-                  </ng-template>
-                </p-cellEditor>
-              </div>
-            </th>
-          </ng-container>
-
-          <!-- Header cells (Passing mode) -->
-          <ng-container *ngIf="!designerMode">
-            <th
-              pResizableColumn
-              pReorderableColumn
-              *ngFor="let col of structure.columns;
-                let i = index;
-                let last = last;
-                let first = first"
-              class="header-cell"
-              [ngClass]="{
-                'first': first,
-                'last': last
-              }">
-              <div class="header-cell__border-wrap">
-                <span class="header-cell__content">{{structure.columns[i]}}</span>
-              </div>
-            </th>
-          </ng-container>
-
-        </tr>
-      </ng-template>
-
-      <!-- TABLE BODY -->
-      <ng-template
-        pTemplate="body"
-        let-rowData
-        let-index="rowIndex">
-        <tr [pReorderableRow]="index">
-
-          <!-- DragRow cell -->
-          <td
-            *ngIf="designerMode"
-            class="body-reorder-cell">
-            <i
-              pReorderableRowHandle
-              class="fas fa-grip-vertical">
-            </i>
-          </td>
-
-          <!-- RowTitle cell (Designer mode) -->
-          <ng-container *ngIf="designerMode">
-            <td
-              pEditableColumn
-              class="body-cell body-row-title-cell">
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <textarea
-                    autosize
-                    [ngModel]="structure.rows[index]">
-                  </textarea>
-                </ng-template>
-                <ng-template pTemplate="output">
-                  <span
-                    autosize
-                    class="body-cell__content">
-                    {{structure.rows[index]}}
-                  </span>
-                </ng-template>
-              </p-cellEditor>
-            </td>
-          </ng-container>
-
-          <!-- RowTitle cell (Passing mode) -->
-          <ng-container *ngIf="!designerMode">
-            <td class="body-cell body-row-title-cell">
-              <span
-                autosize
-                class="body-cell__content">
-                {{structure.rows[index]}}
-              </span>
-            </td>
-          </ng-container>
-
-          <!-- RowData cell (Passing mode) -->
-          <ng-container *ngIf="!designerMode">
-            <td
-              pEditableColumn
-              class="body-cell"
-              *ngFor="let answer of rowData; let i = index">
-              <p-cellEditor>
-                <ng-template pTemplate="input">
-                  <textarea
-                    autosize
-                    [ngModel]="answer">
-                  </textarea>
-                </ng-template>
-                <ng-template pTemplate="output">
-                  <span
-                    autosize
-                    class="body-cell__content">
-                    {{ answer }}
-                  </span>
-                </ng-template>
-              </p-cellEditor>
-            </td>
-          </ng-container>
-
-          <!-- RowData cell (Designer mode) -->
-          <ng-container *ngIf="designerMode">
-            <td
-              class="body-cell body-cell-disabled"
-              *ngFor="let answer of rowData; let i = index">
-              <span
-                autosize
-                class="body-cell__content">
-                Cell value
-              </span>
-            </td>
-          </ng-container>
-
-        </tr>
-      </ng-template>
-    </p-table>
-
-  </div>
 </div>
 
 <ngx-loading-bar></ngx-loading-bar>
