@@ -1,29 +1,39 @@
-
-.table-wrap {
-  margin: 15px;
-}
-
 // primeng styles rewriting
 :host /deep/ {
-  .ui-table-wrapper {
-    padding: 5px;
-  }
-
   .ui-table table {
-    width: auto;
+    padding: 15px;
+    width: 100%;
 
     // hack to fill table cell by div
     .ui-table-thead > tr {
+      height: 80px;
+    }
+
+    .ui-table-tbody > tr {
       height: 1px;
+    }
+    
+    .ui-table-tbody > tr {
+      .body-reorder-cell i,
+      .body-remove-row-cell button {
+        visibility: hidden;
+      }
+
+      &:hover .body-reorder-cell i,
+      &:hover .body-remove-row-cell button {
+        visibility: visible;
+      }
     }
 
     .ui-table-thead > tr > th,
     .ui-table-tbody > tr > td,
     .ui-table-tfoot > tr > td {
       padding: 0;
-      border: 1px solid #d1d9e1;
       text-align: left;
+      vertical-align: top;
       overflow: visible;
+      border-top: 1px solid #d1d9e1;
+      border-bottom: 1px solid #d1d9e1;
 
       &.no-border {
         border: 0 none;
@@ -31,64 +41,160 @@
 
       &.header-reorder-cell,
       &.body-reorder-cell {
-        width: 41px;
-        padding-right: 15px;
-        padding-left: 15px;
+        width: 24px;
+        padding-right: 7px;
+        padding-left: 7px;
+      }
+
+
+      &.header-remove-row-cell,
+      &.body-remove-row-cell {
+        width: 25px;
       }
 
       &.header-row-title-cell {
+        width: 240px;
         min-width: 240px;
       }
 
       &.header-cell {
-        display: table-cell;
         padding: 0;
         height: inherit;  // hack to fill table cell by div
+        width: 240px;
         min-width: 240px;
 
-        .header-cell__border-wrap {
-          display: inline-block;
+        .buttons-wrap {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          flex-direction: column;
+
+          visibility: hidden;
+          position: absolute;
+          top: 17px;
+          bottom: 17px;
+          left: 10px;
+
+          width: 20px;
+
+          & > * {
+            padding: 5px 0;
+          }
+        }
+
+        &:hover .buttons-wrap {
+          visibility: visible;
+        }
+
+        .header-cell__content-wrap {
+          display: block;
           position: relative;
           width: 100%;
           height: 100%;
-          border: 1px solid #d1d9e1;
-          border-bottom: 0 none;
-          border-right: 0 none;
+          border-top: 1px solid #d1d9e1;
+
+          &:after {
+            position: absolute;
+            top: 12px;
+            bottom: 12px;
+            width: 1px;
+            background-color: #d1d9e1;
+
+            content: '';
+          }
         }
 
-        &.first .header-cell__border-wrap {
+        &.first .header-cell__content-wrap {
           border-top-left-radius: 4px;
+          border-left: 1px solid #d1d9e1;
+
+          &:after {
+            display: none;
+          }
+
+          textarea, .header-cell .header-cell__content {
+            border-top-left-radius: 4px;
+          }
         }
 
-        &.last .header-cell__border-wrap {
+        &.last .header-cell__content-wrap {
           width: calc(100% + 1px);
           border-right: 1px solid #d1d9e1;
           border-top-right-radius: 4px;
+
+          textarea,
+          .header-cell .header-cell__content {
+            border-top-right-radius: 4px;
+          }
         }
       }
 
-      &.body-reorder-cell {
+      &.body-reorder-cell,
+      &.body-remove-row-cell {
         text-align: center;
+        vertical-align: middle;
 
         border-top-color: transparent;
         border-bottom-color: transparent;
         border-right-color: transparent;
         border-left-color: transparent;
-
-        i {
-          color: #08a0b7;
-          cursor: pointer;
-        }
       }
 
       &.body-row-title-cell {
+        position: relative;
         border-top-color: transparent;
         border-bottom-color: transparent;
         border-left-color: transparent;
+
+        &:hover .btn-remove {
+          display: block;
+        }
+
+        .btn-remove {
+          display: none;
+          position: absolute;
+          top: 50%;
+          left: -15;
+          transform: translate3d(0, -50%, 0);
+        }
       }
 
-      &.body-cell.body-cell-disabled .body-cell__content {
-        color: #b8c4cf;
+      &.body-cell {
+        height: inherit;
+
+        &.body-cell-disabled .body-cell__content {
+          color: #b8c4cf;
+        }
+
+        &.first {
+          .body-cell__content-wrap {
+            border-left: 1px solid #d1d9e1;
+
+            &:after {
+              display: none;
+            }
+          }
+        }
+
+        .body-cell__content-wrap {
+          display: block;
+          position: relative;
+          width: 100%;
+          height: 100%;
+          
+          // border-bottom: 1px solid #d1d9e1;
+          overflow: hidden;
+
+          &:after {
+            position: absolute;
+            top: 12px;
+            bottom: 12px;
+            width: 1px;
+            background-color: #d1d9e1;
+
+            content: '';
+          }
+        }
       }
   
       textarea {
@@ -106,12 +212,12 @@
     }
 
     textarea,
-    .header-cell .header-cell__content,
-    .body-cell .body-cell__content {
+    .header-cell__content,
+    .body-cell__content {
       display: block;
       width: 100%;
       min-height: 100%;
-      padding: 1em;
+      padding: 15px 20px;
 
       color: #7d8798;
       font-size: 16px;
@@ -128,6 +234,11 @@
       box-shadow: none;
     }
 
+    .header-cell textarea,
+    .header-cell__content {
+      padding-left: 40px;
+    }
+
     .ui-table-tbody tr.ui-table-dragpoint-top:not(.ui-table-dragpoint-bottom) td {
       border-top-color: #08a0b7;
     }
@@ -139,5 +250,23 @@
 
   .ui-state-highlight {
     background-color: #08a0b7;
+  }
+}
+
+.drag-icon {
+  color: #08a0b7;
+  cursor: pointer;
+}
+
+.btn-remove {
+  color: #c9146c;
+  background: transparent;
+  box-shadow: none;
+  border: 0 none;
+  cursor: pointer;
+  outline: none;
+
+  &:hover {
+    outline: none;
   }
 }

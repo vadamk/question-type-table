@@ -15,20 +15,13 @@ import {
   providers: [DataService]
 })
 export class AppComponent implements OnInit {
-  title = 'app';
 
   structure: TableQuestionStructure;
   answers: TableQuestionAnswer;
 
   modes = [
-    {
-      label: 'Designer mode',
-      value: true
-    },
-    {
-      label: 'Passing mode',
-      value: false
-    }
+    { label: 'Designer mode', value: true },
+    { label: 'Passing mode', value: false }
   ];
 
   designerMode = true;

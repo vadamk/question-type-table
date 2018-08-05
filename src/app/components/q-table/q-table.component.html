@@ -7,8 +7,8 @@
     [reorderableColumns]="true"
     [resizableColumns]="true"
     columnResizeMode="expand"
-    (onColReorder)="onColReorder($event)"
-    (onRowReorder)="onRowReorder($event)">
+    (onColReorder)="onReorderColumn($event)"
+    (onRowReorder)="onReorderRow($event)">
 
     <!-- TABLE HEADER -->
     <ng-template pTemplate="header">
@@ -19,6 +19,10 @@
           *ngIf="designerMode"
           class="header-reorder-cell no-border">
         </th>
+        <th
+          *ngIf="designerMode"
+          class="header-remove-row-cell no-border">
+        </th>
         <th class="header-row-title-cell no-border"></th>
 
         <!-- Header cells (Designer mode) -->
@@ -28,7 +32,7 @@
             pResizableColumn
             pReorderableColumn
             *ngFor="let col of _structure.columns;
-              let i = index;
+              let columnIndex = index;
               let last = last;
               let first = first"
             class="header-cell"
@@ -36,16 +40,30 @@
               'first': first,
               'last': last
             }">
-            <div class="header-cell__border-wrap">
+            <div class="header-cell__content-wrap">
+              <div class="buttons-wrap">
+                <span class="drag-icon">
+                  <i
+                    pReorderableColumnHandle
+                    class="fas fa-grip-vertical">
+                  </i>
+                </span>
+                <button
+                  (click)="onRemoveColumn(columnIndex)"
+                  class="btn-remove">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
               <p-cellEditor>
                 <ng-template pTemplate="input">
                   <textarea
                     autosize
-                    [ngModel]="_structure.columns[i]">
+                    [ngModel]="_structure.columns[columnIndex]"
+                    (focusout)="onEditColumnTitle($event.target.value, columnIndex)">
                   </textarea>
                 </ng-template>
                 <ng-template pTemplate="output">
-                  <span class="header-cell__content">{{_structure.columns[i]}}</span>
+                  <span class="header-cell__content">{{_structure.columns[columnIndex]}}</span>
                 </ng-template>
               </p-cellEditor>
             </div>
@@ -56,7 +74,6 @@
         <ng-container *ngIf="!designerMode">
           <th
             pResizableColumn
-            pReorderableColumn
             *ngFor="let col of _structure.columns;
               let i = index;
               let last = last;
@@ -66,7 +83,7 @@
               'first': first,
               'last': last
             }">
-            <div class="header-cell__border-wrap">
+            <div class="header-cell__content-wrap">
               <span class="header-cell__content">{{_structure.columns[i]}}</span>
             </div>
           </th>
@@ -86,10 +103,23 @@
         <td
           *ngIf="designerMode"
           class="body-reorder-cell">
-          <i
-            pReorderableRowHandle
-            class="fas fa-grip-vertical">
-          </i>
+          <span class="drag-icon">
+            <i
+              pReorderableRowHandle
+              class="fas fa-grip-vertical">
+            </i>
+          </span>
+        </td>
+
+        <!-- RemoveRow cell -->
+        <td
+          *ngIf="designerMode"
+          class="body-remove-row-cell">
+          <button
+            (click)="onRemoveRow(index)"
+            class="btn-remove">
+            <i class="fas fa-times"></i>
+          </button>
         </td>
 
         <!-- RowTitle cell (Designer mode) -->
@@ -101,7 +131,8 @@
               <ng-template pTemplate="input">
                 <textarea
                   autosize
-                  [ngModel]="_structure.rows[index]">
+                  [ngModel]="_structure.rows[index]"
+                  (focusout)="onEditRowTitle($event.target.value, index)">
                 </textarea>
               </ng-template>
               <ng-template pTemplate="output">
@@ -131,22 +162,32 @@
           <td
             pEditableColumn
             class="body-cell"
-            *ngFor="let answer of rowData; let i = index">
-            <p-cellEditor>
-              <ng-template pTemplate="input">
-                <textarea
-                  autosize
-                  [ngModel]="answer">
-                </textarea>
-              </ng-template>
-              <ng-template pTemplate="output">
-                <span
-                  autosize
-                  class="body-cell__content">
-                  {{ answer }}
-                </span>
-              </ng-template>
-            </p-cellEditor>
+            *ngFor="let answer of rowData;
+              let columnIndex = index;
+              let last = last;
+              let first = first"
+            [ngClass]="{
+              'first': first,
+              'last': last
+            }">
+            <div class="body-cell__content-wrap">
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <textarea
+                    autosize
+                    [ngModel]="answer"
+                    (focusout)="onEditAnswer($event.target.value, index, columnIndex)">
+                  </textarea>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  <span
+                    autosize
+                    class="body-cell__content">
+                    {{ _answers[index][columnIndex] }}
+                  </span>
+                </ng-template>
+              </p-cellEditor>
+            </div>
           </td>
         </ng-container>
 
@@ -154,12 +195,21 @@
         <ng-container *ngIf="designerMode">
           <td
             class="body-cell body-cell-disabled"
-            *ngFor="let answer of rowData; let i = index">
-            <span
-              autosize
-              class="body-cell__content">
-              Cell value
-            </span>
+            *ngFor="let answer of rowData;
+              let i = index;
+              let last = last;
+              let first = first"
+            [ngClass]="{
+              'first': first,
+              'last': last
+            }">
+            <div class="body-cell__content-wrap">
+              <span
+                autosize
+                class="body-cell__content">
+                Cell value
+              </span>
+            </div>
           </td>
         </ng-container>
 

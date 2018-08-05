@@ -4,11 +4,12 @@ import {
   OnDestroy,
   Input,
   EventEmitter,
-  Output
+  Output,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { QTableService } from '../../services/q-table.service';
+import { QTableService } from './q-table.service';
 
 import {
   TableQuestionStructure,
@@ -19,7 +20,8 @@ import {
   selector: 'app-q-table',
   templateUrl: './q-table.component.html',
   styleUrls: ['./q-table.component.scss'],
-  providers: [QTableService]
+  providers: [QTableService],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QTableComponent implements OnInit, OnDestroy {
 
@@ -39,24 +41,31 @@ export class QTableComponent implements OnInit, OnDestroy {
     private qTableService: QTableService
   ) { }
 
-  onColReorder(event) {
-    console.log('onColReorder: ', event);
+  onReorderColumn(event) {
+    this.qTableService.reorderColumn(event);
   }
 
-  onRowReorder(event) {
-    console.log('onRowReorder: ', event);
+  onReorderRow(event) {
+    this.qTableService.reorderRow(event);
   }
 
-  onAnswerChange(event) {
-    console.log('onAnswerChange: ', event);
+  onEditAnswer(
+    value: string,
+    rowIndex: number,
+    columnIndex: number
+  ) {
+    this.qTableService.editAnswer(value, rowIndex, columnIndex);
   }
 
-  onColumnTitleChange(event) {
-    console.log('onColumnTitleChange: ', event);
+  onEditColumnTitle(
+    value: string,
+    columnIndex: number
+  ) {
+    this.qTableService.editColumnTitle(value, columnIndex);
   }
 
-  onRowTitleChange(event) {
-    console.log('onRowTitleChange: ', event);
+  onEditRowTitle(value: string, rowIndex: number) {
+    this.qTableService.editRowTitle(value, rowIndex);
   }
 
   onAddColumn() {
@@ -67,12 +76,12 @@ export class QTableComponent implements OnInit, OnDestroy {
     this.qTableService.addRow();
   }
 
-  onRemoveColumn(event) {
-    console.log('onRemoveColumn: ', event);
+  onRemoveColumn(removeColumn: number) {
+    this.qTableService.removeColumn(removeColumn);
   }
 
-  onRemoveRow(event) {
-    console.log('onRemoveRow: ', event);
+  onRemoveRow(rowIndex: number) {
+    this.qTableService.removeRow(rowIndex);
   }
 
   subscribe() {
